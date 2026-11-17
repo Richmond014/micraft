@@ -8,7 +8,7 @@ import { rememberHomeScrollPosition } from '../../lib/scroll'
 import { usePageNavigation } from '../../lib/PageNavigationContext'
 
 export function ProjectsSection() {
-  const navigateToHash = usePageNavigation()
+  const { navigate } = usePageNavigation()
   const [selectedNotebook, setSelectedNotebook] = useState<ProjectId | null>(null)
   const notebookTriggerRef = useRef<HTMLButtonElement | null>(null)
   const closeNotebook = useCallback(() => setSelectedNotebook(null), [])
@@ -20,7 +20,7 @@ export function ProjectsSection() {
 
   const handleSeeAll = () => {
     rememberHomeScrollPosition()
-    navigateToHash('#works')
+    navigate('#works')
   }
 
   return (

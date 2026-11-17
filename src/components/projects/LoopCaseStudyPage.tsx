@@ -1,6 +1,8 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { ArrowUpRight } from 'lucide-react'
+import { DeferredImage } from '../ui/DeferredImage'
+import { getResponsiveImageSrcSet } from '../../lib/assets'
 import { scrollToTarget } from '../../lib/scroll'
 import './LoopCaseStudyPage.css'
 
@@ -16,8 +18,49 @@ function goBack() {
 }
 
 const imgIPhone16Pro = "/assets/figma/loop-case-study/iphone16-pro.png";
+const imgIPhone16ProSrcSet = getResponsiveImageSrcSet(imgIPhone16Pro, [400, 800, 1200, 1600, 2400, 3200], 4096);
+const imgIPhone16ProSizes = "(min-width: 1920px) 1500px, 78.125vw";
+const loopDemoVideoSrc = "/assets/figma/Loop_Video_transparent.webm";
 const imgLogoAnimationComponents1 = "/assets/figma/loop-case-study/logo-animation-components1.png";
 const imgImage93 = "/assets/figma/loop-case-study/image93.png";
+const imgMoodboardComposition = "/assets/figma/loop-case-study/moodboard-composition.png";
+const imgMoodboardCompositionSrcSet = getResponsiveImageSrcSet(
+  imgMoodboardComposition,
+  [400, 800, 1200, 1600, 1706],
+);
+
+function DeferredLoopVideo() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [shouldLoad, setShouldLoad] = useState(() => typeof IntersectionObserver === 'undefined');
+
+  useEffect(() => {
+    if (shouldLoad) return;
+    const video = videoRef.current;
+    if (!video) return;
+
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      setShouldLoad(true);
+      observer.disconnect();
+    }, { rootMargin: '300px' });
+    observer.observe(video);
+    return () => observer.disconnect();
+  }, [shouldLoad]);
+
+  return (
+    <video
+      ref={videoRef}
+      aria-label="Loop app video"
+      autoPlay={shouldLoad}
+      muted
+      loop
+      playsInline
+      preload={shouldLoad ? 'metadata' : 'none'}
+      className="absolute inset-0 h-full w-full object-contain"
+      src={shouldLoad ? loopDemoVideoSrc : undefined}
+    />
+  );
+}
 
 const loopChapters = [
   { label: 'Overview', target: 'loop-overview' },
@@ -227,6 +270,12 @@ const imgArrow32 = "/assets/figma/loop-case-study/arrow32.svg";
 const imgArrow34 = "/assets/figma/loop-case-study/arrow34.svg";
 const imgLine2 = "/assets/figma/loop-case-study/line2.svg";
 const imgLine23 = "/assets/figma/loop-case-study/line23.svg";
+const imgIPhone13ProSrcSet = getResponsiveImageSrcSet(imgIPhone13Pro, [400, 800, 1200, 1600, 2400, 3200], 4096);
+const imgIPhone16SrcSet = getResponsiveImageSrcSet(imgIPhone16, [400, 800, 1200, 1600, 2400, 3200], 4096);
+const imgRectangle47SrcSet = getResponsiveImageSrcSet(imgRectangle47, [400, 800], 1000);
+const imgIPhone12ProWoodenHandsSrcSet = getResponsiveImageSrcSet(imgIPhone12ProWoodenHands, [400, 800, 1200, 1600], 1987);
+const imgImage102SrcSet = getResponsiveImageSrcSet(imgImage102, [400, 800, 1200], 1536);
+const imgImage93SrcSet = getResponsiveImageSrcSet(imgImage93, [400, 800], 1200);
 
 type SitemapTone = 'green' | 'orange' | 'purple';
 
@@ -340,12 +389,12 @@ function FigmaLoopCaseStudy() {
         <div className="absolute contents left-[589px] top-[224px]" data-node-id="299:187">
           <div className="absolute h-[804.354px] left-[948.79px] top-[225px] w-[357.297px]" data-node-id="299:188" data-name="iPhone 16 Pro">
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
-              <img loading="eager" alt="" className="absolute h-[139.89%] left-[-216.18%] max-w-none top-[-32.48%] w-[420.11%]" src={imgIPhone16Pro} />
+              <DeferredImage priority sizes={imgIPhone16ProSizes} srcSet={imgIPhone16ProSrcSet} alt="" className="absolute h-[139.89%] left-[-216.18%] max-w-none top-[-32.48%] w-[420.11%]" src={imgIPhone16Pro} />
             </div>
           </div>
           <div className="absolute h-[814.812px] left-[590px] top-[337.19px] w-[372.983px]" data-node-id="299:189" data-name="iPhone 16 Pro">
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
-              <img loading="eager" alt="" className="absolute h-[138.09%] left-[-98.91%] max-w-none top-[-7.25%] w-[402.44%]" src={imgIPhone16Pro} />
+              <DeferredImage priority sizes={imgIPhone16ProSizes} srcSet={imgIPhone16ProSrcSet} alt="" className="absolute h-[138.09%] left-[-98.91%] max-w-none top-[-7.25%] w-[402.44%]" src={imgIPhone16Pro} />
             </div>
           </div>
         </div>
@@ -417,7 +466,14 @@ function FigmaLoopCaseStudy() {
       <div className="absolute h-[771px] left-0 top-[1695px] w-[1920px]" data-node-id="299:219" data-name="image 93">
         <div aria-hidden className="absolute inset-0 pointer-events-none">
           <div className="absolute inset-0 overflow-hidden">
-            <img loading="lazy" alt="" className="absolute h-[163.86%] left-0 max-w-none top-[-45.68%] w-full" src={imgImage93} />
+            <img
+              loading="lazy"
+              alt=""
+              className="absolute h-[163.86%] left-0 max-w-none top-[-45.68%] w-full"
+              src={imgImage93}
+              srcSet={imgImage93SrcSet}
+              sizes="(min-width: 1024px) 720px, 100vw"
+            />
           </div>
           <div className="absolute bg-[rgba(0,0,0,0.5)] inset-0" />
         </div>
@@ -499,7 +555,14 @@ function FigmaLoopCaseStudy() {
           </div>
           <div className="col-1 h-[205.438px] ml-[220px] mt-0 relative rounded-[10px] row-1 w-[115px]" data-node-id="299:242">
             <div aria-hidden className="absolute inset-0 pointer-events-none rounded-[10px]">
-              <img loading="lazy" alt="" className="absolute max-w-none object-cover rounded-[10px] size-full" src={imgRectangle47} />
+              <img
+                loading="lazy"
+                alt=""
+                className="absolute max-w-none object-cover rounded-[10px] size-full"
+                src={imgRectangle47}
+                srcSet={imgRectangle47SrcSet}
+                sizes="(min-width: 1024px) 520px, 100vw"
+              />
               <div className="absolute bg-[rgba(0,0,0,0.5)] inset-0 rounded-[10px]" />
             </div>
           </div>
@@ -539,7 +602,14 @@ function FigmaLoopCaseStudy() {
       <div className="absolute bg-[#00e676] h-[495px] left-[calc(50%+9px)] overflow-clip rounded-[50px] top-[7125px] w-[828px]" data-node-id="299:255">
         <div className="absolute h-[988px] left-[158px] top-[128px] w-[511px]" data-node-id="299:256" data-name="iPhone 13 Pro">
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <img loading="lazy" alt="" className="absolute h-[128.43%] left-[-63.51%] max-w-none top-[-13.75%] w-[331.39%]" src={imgIPhone13Pro} />
+            <img
+              loading="lazy"
+              alt=""
+              className="absolute h-[128.43%] left-[-63.51%] max-w-none top-[-13.75%] w-[331.39%]"
+              src={imgIPhone13Pro}
+              srcSet={imgIPhone13ProSrcSet}
+              sizes="(min-width: 1920px) 1692px, 100vw"
+            />
           </div>
         </div>
       </div>
@@ -635,7 +705,15 @@ function FigmaLoopCaseStudy() {
           <img loading="lazy" alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none rounded-[10px] size-full" src={imgImage105} />
         </div>
       </div>
-      <img className="loop-study-moodboard-composition" src="/assets/figma/loop-case-study/moodboard-composition.png" alt="Loop moodboard collage" />
+      <DeferredImage
+        src={imgMoodboardComposition}
+        srcSet={imgMoodboardCompositionSrcSet}
+        sizes="1706px"
+        width={1706}
+        height={1046}
+        className="loop-study-moodboard-composition"
+        alt="Loop moodboard collage"
+      />
       <div className="absolute drop-shadow-[0px_4px_2px_rgba(0,0,0,0.25)] h-[1030px] left-[calc(33.33%+69.67px)] rounded-[50px] top-[8918px] w-[1127px]" data-node-id="299:290" />
       <div className="loop-study-logo-exploration -translate-x-1/2 absolute h-[987px] left-[calc(50%+17.5px)] top-[9825px] w-[1677px]" data-node-id="299:294">
         <div className="[word-break:break-word] absolute content-stretch flex flex-col gap-[19px] items-start leading-[normal] left-0 not-italic right-0 text-black top-0" data-node-id="299:295">
@@ -647,7 +725,14 @@ function FigmaLoopCaseStudy() {
         <div className="absolute h-[821px] left-0 overflow-clip right-0 rounded-[5px] top-[166px]" data-node-id="299:298">
           <div className="absolute h-[486px] left-[-222px] rounded-[50px] top-[465px] w-[537px]" data-node-id="299:299" data-name="image 99">
             <div className="absolute inset-0 opacity-45 overflow-hidden pointer-events-none rounded-[50px]">
-              <img loading="lazy" alt="" className="absolute h-[233.22%] left-[-28.72%] max-w-none top-[-61.5%] w-[158.56%]" src={imgImage102} />
+              <img
+                loading="lazy"
+                alt=""
+                className="absolute h-[233.22%] left-[-28.72%] max-w-none top-[-61.5%] w-[158.56%]"
+                src={imgImage102}
+                srcSet={imgImage102SrcSet}
+                sizes="(min-width: 1920px) 1934px, 100vw"
+              />
             </div>
           </div>
           <div className="absolute h-[370px] left-[-204px] rounded-[50px] top-[-49px] w-[407px]" data-node-id="299:300" data-name="image 102">
@@ -709,13 +794,19 @@ function FigmaLoopCaseStudy() {
           {[0, 1].map((setIndex) => (
             <div className="loop-study-backdrop-set" key={`screens-set-${setIndex}`}>
               {loopScreenMarqueeItems.map((item) => (
-                <img key={`${setIndex}-${item.src}`} loading={setIndex === 0 ? 'eager' : 'lazy'} alt="" className="loop-study-backdrop-screen" src={item.src} />
+                <DeferredImage key={`${setIndex}-${item.src}`} alt="" className="loop-study-backdrop-screen" src={item.src} />
               ))}
             </div>
           ))}
         </div>
         <div className="loop-study-phone-showcase">
-          <img loading="eager" alt="A wooden hand holding the Loop app phone" className="loop-study-screen-handheld" src={imgIPhone12ProWoodenHands} />
+          <DeferredImage
+            alt="A wooden hand holding the Loop app phone"
+            className="loop-study-screen-handheld"
+            src={imgIPhone12ProWoodenHands}
+            srcSet={imgIPhone12ProWoodenHandsSrcSet}
+            sizes="(min-width: 1024px) 650px, 100vw"
+          />
         </div>
         <div className="loop-study-screen-bottom-rule" aria-hidden="true" />
       </div>
@@ -897,7 +988,7 @@ function FigmaLoopCaseStudy() {
       <div className="absolute bg-[#3f1d56] h-[680px] left-[calc(50%+24px)] rounded-[44px] top-[16665px] w-[700px]" data-node-id="299:489" />
       <div className="absolute h-[512px] left-[calc(50%+259.5px)] top-[16749px] w-[247px]" data-node-id="299:490" data-name="Redmi Note 11 Pro">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <video aria-label="Loop app video" autoPlay muted loop playsInline preload="metadata" className="absolute inset-0 h-full w-full object-contain" src="/assets/figma/Loop_Video_transparent.webm" />
+          <DeferredLoopVideo />
         </div>
       </div>
       <div className="loop-study-benefit-words" data-node-id="299:491" aria-label="Loop is convenient, reliable, safe, accessible, and efficient">
@@ -989,7 +1080,14 @@ function FigmaLoopCaseStudy() {
       </div>
       <div className="absolute h-[1004px] left-[107px] top-[21095px] w-[776px]" data-node-id="299:519" data-name="iPhone 16">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <img loading="lazy" alt="" className="absolute h-[123.57%] left-[-51.83%] max-w-none top-[-13.51%] w-[213.11%]" src={imgIPhone16} />
+          <img
+            loading="lazy"
+            alt=""
+            className="absolute h-[123.57%] left-[-51.83%] max-w-none top-[-13.51%] w-[213.11%]"
+            src={imgIPhone16}
+            srcSet={imgIPhone16SrcSet}
+            sizes="(min-width: 1920px) 1692px, 100vw"
+          />
         </div>
       </div>
       <div className="[word-break:break-word] absolute font-['HelveticaNeue:Light'] leading-[0] left-[calc(41.67%+3.83px)] not-italic text-[0px] text-white top-[21099px] w-[894px] whitespace-pre-wrap" data-node-id="299:520">

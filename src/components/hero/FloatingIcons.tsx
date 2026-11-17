@@ -3,7 +3,7 @@ import { NoteBubble } from '../ui/NoteBubble'
 import { useReducedMotion } from '../../hooks/useMediaQuery'
 import { useSound } from '../../hooks/useSound'
 import { useTransientNote } from '../../hooks/useTransientNote'
-import { assets } from '../../lib/assets'
+import { assets, getResponsiveImageSrcSet } from '../../lib/assets'
 import { heroIcons, type HeroIcon } from '../../lib/data'
 import { springs } from '../../lib/springs'
 
@@ -33,7 +33,14 @@ function FloatingIcon({ icon, src, index }: { icon: HeroIcon; src: string; index
           transition={springs.tactile}
           className={`block w-full outline-offset-2 focus-visible:outline-2 focus-visible:outline-black ${hasLogoTile ? 'overflow-hidden rounded-[10px] shadow-[0_10px_4px_0_rgba(0,0,0,0.25)]' : ''}`}
         >
-          <img src={src} alt="" draggable={false} className="block h-auto w-full" />
+          <img
+            src={src}
+            srcSet={getResponsiveImageSrcSet(src, icon.id === 'figma' ? [200, 400] : [400])}
+            sizes={icon.size}
+            alt=""
+            draggable={false}
+            className="block h-auto w-full"
+          />
         </motion.button>
       </motion.div>
 

@@ -45,14 +45,14 @@ const GLITCH = '01{}<>/\\*+'
 
 // Timeline after the counter reaches 100%
 const SWIRL_AT = 0.9 // the swirl starts when loading is this far along, so nobody waits at 100%
-const SUCK_MS = 1000 // clover is pushed from the stem into the center
+const SUCK_MS = 800 // clover is pushed from the stem into the center
 const POP_MS = SUCK_MS + 100 // ...and snaps; the logo is already opening by now
-const FINAL_HOLD = 600 // the logo rests this long before everything lifts away
-const LOGO_IN_MS = 1000 // the logo eases in over this long
-const LOGO_IN_DELAY = 640 // measured from the swirl start, so it opens as the tiles collapse
+const FINAL_HOLD = 200
+const LOGO_IN_MS = 600 // the logo eases in over this long
+const LOGO_IN_DELAY = 400 // measured from the swirl start, so it opens as the tiles collapse
 const LOGO_EASE = 'cubic-bezier(0.37, 0, 0.2, 1)' // gentle in, soft landing
-const OPEN_MS = 1100 // curtain lifts, logo shrinks away, page un-blurs
-const EXIT_STAGGER = 140 // the logo starts leaving first, the curtain follows
+const OPEN_MS = 800 // curtain lifts, logo shrinks away, page un-blurs
+const EXIT_STAGGER = 100 // the logo starts leaving first, the curtain follows
 const SWEEP_MS = 340 // how long the push takes to travel from the stem across the clover
 const TRAVEL_MS = SUCK_MS - SWEEP_MS - 60 // how long each tile spends spiraling in
 const WIND_UP_DEG = -5 // each tile pulls back a touch before it is pushed
@@ -351,9 +351,8 @@ export function PageLoader({
     let popped = false
     const start = performance.now()
     let last = start
-
     const tick = (now: number) => {
-      const dt = Math.min(now - last, 50)
+      const dt = Math.max(now - last, 0)
       last = now
       const elapsed = now - start
       const timedOut = elapsed >= maxDuration
@@ -392,7 +391,7 @@ export function PageLoader({
       return () => clearTimeout(timer)
     }
     if (phase === 'message') {
-      const timer = setTimeout(() => setPhase('opening'), reduceMotion ? 700 : FINAL_HOLD)
+      const timer = setTimeout(() => setPhase('opening'), reduceMotion ? 0 : FINAL_HOLD)
       return () => clearTimeout(timer)
     }
     if (phase === 'opening') {

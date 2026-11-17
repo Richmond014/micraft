@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useReducedMotion } from '../../hooks/useMediaQuery'
+import { getResponsiveImageSrcSet } from '../../lib/assets'
 import { DeferredImage } from '../ui/DeferredImage'
 
 type Props = { screenshots: string[] }
@@ -53,19 +54,31 @@ export function ScreenshotGallery({ screenshots }: Props) {
   const markSettled = () => setSettled((n) => n + 1)
 
   const renderImages = (duplicate: boolean) =>
-    screenshots.map((src, index) => (
-      <DeferredImage
-        key={`${duplicate ? 'dup' : 'main'}-${src}-${index}`}
-        src={src}
-        alt={duplicate ? '' : `Experience photo ${index + 1}`}
-        aria-hidden={duplicate || undefined}
-        draggable={false}
-        onLoad={duplicate ? undefined : markSettled}
-        onError={duplicate ? undefined : markSettled}
-        className="h-full w-auto max-w-none shrink-0 rounded-[9px] object-contain"
-        rootMargin="600px"
-      />
-    ))
+    screenshots.map((src, index) => {
+      const sizes = src.endsWith('/imgRectangle24.png')
+        ? '144px'
+        : src.endsWith('/imgRectangle25.png')
+          ? '226px'
+          : src.endsWith('/imgRectangle29.png')
+            ? '105px'
+            : '240px'
+
+      return (
+        <DeferredImage
+          key={`${duplicate ? 'dup' : 'main'}-${src}-${index}`}
+          src={src}
+          srcSet={getResponsiveImageSrcSet(src, [400, 800])}
+          sizes={sizes}
+          alt={duplicate ? '' : `Experience photo ${index + 1}`}
+          aria-hidden={duplicate || undefined}
+          draggable={false}
+          onLoad={duplicate ? undefined : markSettled}
+          onError={duplicate ? undefined : markSettled}
+          className="h-full w-auto max-w-none shrink-0 rounded-[9px] object-contain"
+          rootMargin="200px"
+        />
+      )
+    })
 
   return (
     <div

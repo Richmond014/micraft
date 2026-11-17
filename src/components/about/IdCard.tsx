@@ -2,7 +2,7 @@ import { motion } from 'motion/react'
 import { DeferredImage } from '../ui/DeferredImage'
 import { useReducedMotion } from '../../hooks/useMediaQuery'
 import { useIdTilt } from '../../hooks/useIdTilt'
-import { assets } from '../../lib/assets'
+import { assets, getResponsiveImageSrcSet } from '../../lib/assets'
 import { about } from '../../lib/data'
 import { springs } from '../../lib/springs'
 
@@ -27,7 +27,14 @@ export function IdCard() {
       <div aria-hidden className="mx-auto mb-[6%] h-3.5 w-[34%] rounded-full border border-white/90 bg-gradient-to-b from-white to-[#e7ebf1] shadow-[inset_0_1px_2px_rgba(15,23,42,0.08)]" />
       <div className="aspect-[519/676] overflow-hidden rounded-[1.3rem] border-[3px] border-white/90 bg-white shadow-[0_5px_14px_rgba(31,41,55,0.12)]">
         {photo && (
-          <DeferredImage src={photo} alt="Portrait of Michael Richmond Racelis" draggable={false} className="size-full scale-[1.025] object-cover" />
+          <DeferredImage
+            src={photo}
+            srcSet={getResponsiveImageSrcSet(photo, [400, 800])}
+            sizes="(min-width: 368px) 288px, calc(100vw - 48px)"
+            alt="Portrait of Michael Richmond Racelis"
+            draggable={false}
+            className="size-full scale-[1.025] object-cover"
+          />
         )}
       </div>
       <figcaption className="mt-3 px-1">

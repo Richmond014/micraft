@@ -4,6 +4,7 @@ import {
   useCallback,
   useEffect,
   useLayoutEffect,
+  useMemo,
   useRef,
   useState,
   type ComponentType,
@@ -21,63 +22,113 @@ import { PageLoader } from './components/ui/PageLoader'
 import { CurtainReveal, type CurtainPhase } from './components/ui/CurtainReveal'
 import { SoundToggle } from './components/ui/SoundToggle'
 import { NetworkStatus } from './components/ui/NetworkStatus'
-import { assets } from './lib/assets'
+import { assets, getResponsiveImageSrcSet } from './lib/assets'
 import { projectScrollReturnKeys, refreshScrollDimensions, scrollToTarget } from './lib/scroll'
 import { PageNavigationContext, type CurtainPalette } from './lib/PageNavigationContext'
 import { useLenis } from './hooks/useLenis'
 import { useReducedMotion } from './hooks/useMediaQuery'
 
-const pages: Partial<Record<string, LazyExoticComponent<ComponentType>>> = {
-  '#loop-case-study': lazy(() =>
+type RouteModule = { default: ComponentType }
+type RouteLoader = () => Promise<RouteModule>
+
+const pageLoaders: Record<string, RouteLoader> = {
+  '#loop-case-study': () =>
     import('./components/projects/LoopCaseStudyPage.tsx').then((module) => ({
       default: module.LoopCaseStudyPage,
     })),
-  ),
-  '#aws-skill-builder-case-study': lazy(() =>
+  '#aws-skill-builder-case-study': () =>
     import('./components/projects/AwsSkillBuilderCaseStudyPage.tsx').then((module) => ({
       default: module.AwsSkillBuilderCaseStudyPage,
     })),
-  ),
-  '#bantay-contributions': lazy(() =>
+  '#bantay-contributions': () =>
     import('./components/projects/BantayContributionsPage.tsx').then((module) => ({
       default: module.BantayContributionsPage,
     })),
-  ),
-  '#ease-contributions': lazy(() =>
+  '#ease-contributions': () =>
     import('./components/projects/EaseServiceContributionsPage.tsx').then((module) => ({
       default: module.EaseServiceContributionsPage,
     })),
-  ),
-  '#spotify-contributions': lazy(() =>
+  '#spotify-contributions': () =>
     import('./components/projects/SpotifyContributionsPage.tsx').then((module) => ({
       default: module.SpotifyContributionsPage,
     })),
-  ),
-  '#hanap-contributions': lazy(() =>
+  '#hanap-contributions': () =>
     import('./components/projects/HanapBuhayContributionsPage.tsx').then((module) => ({
       default: module.HanapBuhayContributionsPage,
     })),
-  ),
-  '#awscc-contributions': lazy(() =>
+  '#awscc-contributions': () =>
     import('./components/projects/AwsCloudClubWebsiteContributionsPage.tsx').then((module) => ({
       default: module.AwsCloudClubWebsiteContributionsPage,
     })),
-  ),
-  '#awsoff-contributions': lazy(() =>
+  '#awsoff-contributions': () =>
     import('./components/projects/AwsOfficialSiteContributionsPage.tsx').then((module) => ({
       default: module.AwsOfficialSiteContributionsPage,
     })),
-  ),
-  '#works': lazy(() =>
+  '#works': () =>
     import('./components/projects/WorksArchivePage.tsx').then((module) => ({
       default: module.WorksArchivePage,
     })),
-  ),
-  '#resume': lazy(() =>
+  '#resume': () =>
     import('./components/resume/ResumePage.tsx').then((module) => ({
       default: module.ResumePage,
     })),
-  ),
+}
+
+const pageImports = new Map<string, Promise<RouteModule>>()
+
+function loadPage(hash: string) {
+  const loader = pageLoaders[hash]
+  if (!loader) return Promise.reject(new Error(`No route loader is registered for "${hash}".`))
+
+  const existing = pageImports.get(hash)
+  if (existing) return existing
+
+  const pending = loader()
+  pageImports.set(hash, pending)
+  void pending.catch(() => {
+    if (pageImports.get(hash) === pending) pageImports.delete(hash)
+  })
+  return pending
+}
+
+const pages: Partial<Record<string, LazyExoticComponent<ComponentType>>> = Object.fromEntries(
+  Object.keys(pageLoaders).map((hash) => [hash, lazy(() => loadPage(hash))]),
+)
+
+const bantayHeroSrc = '/assets/figma/BANTAY%20ASSETS/image%2046.png'
+const bantayHeroSizes = '(min-width: 1200px) 705px, (min-width: 768px) 60vw, calc(100vw - 32px)'
+const loopHeroSrc = '/assets/figma/loop-case-study/iphone16-pro.png'
+const loopHeroSizes = '(min-width: 1920px) 1500px, 78.125vw'
+const routeHeroAssets: Record<string, { src: string; srcSet?: string; sizes?: string }> = {
+  '#loop-case-study': {
+    src: loopHeroSrc,
+    srcSet: getResponsiveImageSrcSet(loopHeroSrc, [400, 800, 1200, 1600, 2400, 3200], 4096),
+    sizes: loopHeroSizes,
+  },
+  '#bantay-contributions': {
+    src: bantayHeroSrc,
+    srcSet: getResponsiveImageSrcSet(bantayHeroSrc, [400, 800, 1200], 1765),
+    sizes: bantayHeroSizes,
+  },
+}
+
+const routeHeroPreloads = new Map<string, HTMLImageElement>()
+
+function prefetchRouteHero(hash: string) {
+  const asset = routeHeroAssets[hash]
+  if (!asset || routeHeroPreloads.has(hash)) return
+
+  const image = new Image()
+  image.fetchPriority = 'high'
+  routeHeroPreloads.set(hash, image)
+  if (asset.srcSet) image.srcset = asset.srcSet
+  if (asset.sizes) image.sizes = asset.sizes
+  image.src = asset.src
+
+  void image.decode().catch((error: unknown) => {
+    if (routeHeroPreloads.get(hash) === image) routeHeroPreloads.delete(hash)
+    console.error(`Unable to prefetch the primary image for route "${hash}".`, error)
+  })
 }
 
 type PendingNavigation = {
@@ -159,6 +210,21 @@ function App() {
     setCurtainPalette(navigation.palette)
     changeCurtainPhase('covering')
   }, [changeCurtainPhase, commitNavigation, reducedMotion])
+
+  const prefetchPage = useCallback((nextHash: string) => {
+    const targetHash = nextHash.startsWith('#') ? nextHash : `#${nextHash}`
+    if (!pageLoaders[targetHash]) return
+
+    prefetchRouteHero(targetHash)
+    void loadPage(targetHash).catch((error: unknown) => {
+      console.error(`Unable to prefetch route "${targetHash}".`, error)
+    })
+  }, [])
+
+  const pageNavigation = useMemo(
+    () => ({ navigate: navigateToHash, prefetch: prefetchPage }),
+    [navigateToHash, prefetchPage],
+  )
 
   useEffect(() => {
     const onLocationChange = () => {
@@ -314,14 +380,14 @@ function App() {
   )
 
   return (
-    <PageNavigationContext.Provider value={navigateToHash}>
+    <PageNavigationContext.Provider value={pageNavigation}>
       <PageLoader
         logo={assets.loader.logoBlack}
         imageAspectRatio={1}
         fillOrder="center"
         cols={6}
         rows={6}
-        urls={assets.preload}
+        maxDuration={1800}
         brand="MICHAEL"
         scrollToTopOnOpen={!hasResumeViewReturn}
         onComplete={restoreResumeViewPosition}

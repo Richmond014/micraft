@@ -1,5 +1,6 @@
 import { motion } from 'motion/react'
 import { DeferredImage } from '../ui/DeferredImage'
+import { getResponsiveImageSrcSet } from '../../lib/assets'
 
 type Props = {
   previews: string[]
@@ -40,6 +41,7 @@ export function FolderGraphic({ previews, active, reduced, title, date }: Props)
 
       {visiblePreviews.map((src, index) => {
         const card = cards[index]
+        const srcSet = getResponsiveImageSrcSet(src, [400])
         return (
           <motion.div
             key={src}
@@ -59,7 +61,14 @@ export function FolderGraphic({ previews, active, reduced, title, date }: Props)
             }}
             className="overflow-hidden rounded-[5px] bg-white shadow-[0_6px_16px_rgba(0,0,0,0.24)]"
           >
-            <DeferredImage src={src} alt="" draggable={false} className="size-full object-cover" />
+            <DeferredImage
+              src={src}
+              srcSet={srcSet}
+              sizes={srcSet ? '(min-width: 768px) 220px, 60vw' : undefined}
+              alt=""
+              draggable={false}
+              className="size-full object-cover"
+            />
           </motion.div>
         )
       })}

@@ -72,7 +72,7 @@ function assetPath(file: string) {
 }
 
 function SiteImage({ screen, eager = false }: { screen: ScreenSpec; eager?: boolean }) {
-  return <img src={assetPath(screen.file)} alt={screen.alt} loading={eager ? 'eager' : 'lazy'} decoding="async" />;
+  return <img src={assetPath(screen.file)} alt={screen.alt} loading={eager ? 'eager' : 'lazy'} fetchPriority={eager ? 'high' : 'auto'} decoding="async" />;
 }
 
 function ProgressionScreen({ screen }: { screen: ScreenSpec }) {

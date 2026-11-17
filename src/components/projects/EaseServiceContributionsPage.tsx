@@ -97,7 +97,7 @@ function assetPath(set: AssetSet, file: string) {
 }
 
 function EaseImage({ set, file, alt, eager = false }: { set: AssetSet; file: string; alt: string; eager?: boolean }) {
-  return <img src={assetPath(set, file)} alt={alt} loading={eager ? 'eager' : 'lazy'} decoding="async" />;
+  return <img src={assetPath(set, file)} alt={alt} loading={eager ? 'eager' : 'lazy'} fetchPriority={eager ? 'high' : 'auto'} decoding="async" />;
 }
 
 type FlowScreenProps = {

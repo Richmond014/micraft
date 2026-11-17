@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { motion } from 'motion/react'
 import { DeferredImage } from '../ui/DeferredImage'
 import { useReducedMotion } from '../../hooks/useMediaQuery'
-import { assets } from '../../lib/assets'
+import { assets, getResponsiveImageSrcSet } from '../../lib/assets'
 import { journey } from '../../lib/data'
 
 const shadow = 'shadow-[0_10px_22px_-10px_rgba(0,0,0,0.35),0_2px_4px_rgba(0,0,0,0.08)]'
@@ -158,7 +158,13 @@ export function RoleCards({ activeId: controlledActiveId, onActiveChange }: Role
                 transition={move}
                 className="pointer-events-none absolute grid place-items-center"
               >
-                <DeferredImage src={card.image} alt="" className="absolute inset-0 size-full object-cover" />
+                <DeferredImage
+                  src={card.image}
+                  srcSet={getResponsiveImageSrcSet(card.image, [400, 800])}
+                  sizes="(min-width: 424px) 170px, 40vw"
+                  alt=""
+                  className="absolute inset-0 size-full object-cover"
+                />
               </motion.span>
             )}
           </motion.button>

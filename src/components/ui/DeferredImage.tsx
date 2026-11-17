@@ -1,16 +1,25 @@
 import { useEffect, useRef, useState, type ImgHTMLAttributes } from 'react'
 
-type Props = Omit<ImgHTMLAttributes<HTMLImageElement>, 'src'> & {
+type Props = Omit<ImgHTMLAttributes<HTMLImageElement>, 'src' | 'srcSet' | 'loading' | 'fetchPriority'> & {
   src: string
+  srcSet?: string
   rootMargin?: string
+  priority?: boolean
 }
 
-export function DeferredImage({ src, rootMargin = '200px', ...props }: Props) {
+export function DeferredImage({
+  src,
+  srcSet,
+  rootMargin = '200px',
+  priority = false,
+  ...props
+}: Props) {
   const imageRef = useRef<HTMLImageElement>(null)
-  const [shouldLoad, setShouldLoad] = useState(() => typeof IntersectionObserver === 'undefined')
+  const [shouldLoad, setShouldLoad] = useState(() => priority || typeof IntersectionObserver === 'undefined')
+  const isReady = priority || shouldLoad
 
   useEffect(() => {
-    if (shouldLoad) return
+    if (priority || shouldLoad) return
     const image = imageRef.current
     if (!image) return
 
@@ -21,15 +30,17 @@ export function DeferredImage({ src, rootMargin = '200px', ...props }: Props) {
     }, { rootMargin })
     observer.observe(image)
     return () => observer.disconnect()
-  }, [rootMargin, shouldLoad])
+  }, [priority, rootMargin, shouldLoad])
 
   return (
     <img
       {...props}
       ref={imageRef}
-      src={shouldLoad ? src : undefined}
-      loading="lazy"
+      loading={isReady ? 'eager' : 'lazy'}
+      fetchPriority={priority ? 'high' : 'auto'}
       decoding={props.decoding ?? 'async'}
+      srcSet={isReady ? srcSet : undefined}
+      src={isReady ? src : undefined}
     />
   )
 }

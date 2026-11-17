@@ -1,6 +1,8 @@
 import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react'
 import { createPortal } from 'react-dom'
 import { ArrowUpRight } from 'lucide-react'
+import { DeferredImage } from '../ui/DeferredImage'
+import { getResponsiveImageSrcSet } from '../../lib/assets'
 import { scrollToTarget } from '../../lib/scroll'
 import './AwsSkillBuilderCaseStudyPage.css'
 
@@ -12,7 +14,7 @@ const chapters = [
 ] as const
 
 const learningWorks = [
-  { src: '/assets/figma/archive/aws-skill-builder.png', alt: 'AWS Skill Builder Departments landing page with cloud club branding and a learning journey.' },
+  { src: '/assets/figma/imgRectangle25.png', alt: 'AWS Skill Builder Departments landing page with cloud club branding and a learning journey.' },
   { src: '/assets/figma/imgRankS1.png', alt: 'Leaderboard screen with learner rankings and achievement visuals.' },
   { src: '/assets/figma/imgRectangle25.png', alt: 'Classroom submission and assignment review interface.' },
   { src: '/assets/figma/imgRectangle29.png', alt: 'AWS Skill Builder learning activity interface.' },
@@ -152,8 +154,25 @@ function ChapterNav() {
   )
 }
 
-function ProjectImage({ src, alt, className = '', style }: { src: string; alt: string; className?: string; style?: CSSProperties }) {
-  return <img className={`aws-project-image ${className}`} src={src} alt={alt} loading="lazy" style={style} />
+function ProjectImage({ src, alt, className = '', style, priority = false }: {
+  src: string
+  alt: string
+  className?: string
+  style?: CSSProperties
+  priority?: boolean
+}) {
+  const srcSet = getResponsiveImageSrcSet(src)
+  return (
+    <DeferredImage
+      className={`aws-project-image ${className}`}
+      src={src}
+      srcSet={srcSet}
+      sizes={srcSet ? '(min-width: 1385px) 540px, (min-width: 768px) 39vw, calc(100vw - 32px)' : undefined}
+      alt={alt}
+      priority={priority}
+      style={style}
+    />
+  )
 }
 
 function useReveal() {
@@ -231,7 +250,7 @@ export function AwsSkillBuilderCaseStudyPage() {
           </dl>
         </div>
         <figure className="aws-overview-art">
-          <ProjectImage src="/assets/figma/archive/aws-skill-builder.png" alt="AWS Skill Builder landing page concept with a cloud club mascot, learning journey, and cloud themed interface." />
+          <ProjectImage src="/assets/figma/imgRectangle25.png" alt="AWS Skill Builder landing page concept with a cloud club mascot, learning journey, and cloud themed interface." priority />
         </figure>
       </section>
 

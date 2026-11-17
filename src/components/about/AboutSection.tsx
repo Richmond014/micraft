@@ -2,13 +2,13 @@ import { Plus } from 'lucide-react'
 import { DeferredImage } from '../ui/DeferredImage'
 import { IdCard } from './IdCard'
 import { PillButton } from '../ui/PillButton'
-import { assets } from '../../lib/assets'
+import { assets, getResponsiveImageSrcSet } from '../../lib/assets'
 import { about, linkedinUrl, software } from '../../lib/data'
 import { rememberResumeReturnPosition } from '../../lib/scroll'
 import { usePageNavigation } from '../../lib/PageNavigationContext'
 
 export function AboutSection() {
-  const navigateToHash = usePageNavigation()
+  const { navigate } = usePageNavigation()
   const icons = software.flatMap((s) => {
     const src = assets.about.software[s.id]
     return src ? [{ ...s, src }] : []
@@ -28,7 +28,13 @@ export function AboutSection() {
               <ul className="mt-3 flex gap-3">
                 {icons.map(({ id, label, src }) => (
                   <li key={id}>
-                    <DeferredImage src={src} alt={label} className="size-10 rounded-xl object-contain sm:size-12" />
+                    <DeferredImage
+                      src={src}
+                      srcSet={getResponsiveImageSrcSet(src, [200, 400])}
+                      sizes="(min-width: 640px) 48px, 40px"
+                      alt={label}
+                      className="size-10 rounded-xl object-contain sm:size-12"
+                    />
                   </li>
                 ))}
               </ul>
@@ -48,7 +54,7 @@ export function AboutSection() {
             </PillButton>
             <PillButton variant="dark" onClick={() => {
               rememberResumeReturnPosition()
-              navigateToHash('#resume')
+              navigate('#resume')
             }}>
               {about.buttons.resume}
             </PillButton>

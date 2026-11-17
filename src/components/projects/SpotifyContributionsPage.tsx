@@ -110,7 +110,7 @@ function imagePath(file: string) {
 }
 
 function ProjectImage({ file, alt, eager = false }: { file: string; alt: string; eager?: boolean }) {
-  return <img src={imagePath(file)} alt={alt} loading={eager ? 'eager' : 'lazy'} decoding="async" />;
+  return <img src={imagePath(file)} alt={alt} loading={eager ? 'eager' : 'lazy'} fetchPriority={eager ? 'high' : 'auto'} decoding="async" />;
 }
 
 function FlowScreen({ screen, compact = false }: { screen: Screen; compact?: boolean }) {

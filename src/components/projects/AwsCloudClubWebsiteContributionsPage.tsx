@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type 
 import { ArrowLeft } from 'lucide-react';
 import { useSlidingPill } from '../../hooks/useSlidingPill';
 import { scrollToSection } from '../../lib/scroll';
+import { getResponsiveImageSrcSet } from '../../lib/assets';
 import './AwsCloudClubWebsiteContributionsPage.css';
 
 type DesignSet = 'LOW' | 'HIGH' | 'MOBILE';
@@ -67,8 +68,64 @@ function imagePath(file: string) {
   return `/assets/figma/AWS%20TECHTEAM/${encodeURIComponent(file)}`;
 }
 
+const responsiveScreenSpecs: Record<string, {
+  width: number;
+  height: number;
+  widths: readonly number[];
+  sizes: string;
+}> = {
+  'HERO.png': {
+    width: 3738,
+    height: 2385,
+    widths: [400, 800, 1200, 1600, 2400],
+    sizes: '(min-width: 1024px) 50vw, 100vw',
+  },
+  'ZenBook Duo 14.png': {
+    width: 4096,
+    height: 3072,
+    widths: [400, 800, 1200, 1600, 2400],
+    sizes: '(min-width: 1024px) 50vw, 100vw',
+  },
+  'Group 114.png': {
+    width: 3738,
+    height: 14206,
+    widths: [400, 800, 1200, 1600, 2400],
+    sizes: '(min-width: 640px) 520px, 100vw',
+  },
+  'Group 116.png': {
+    width: 3749,
+    height: 14123,
+    widths: [400, 800, 1200, 1600, 2400],
+    sizes: '(min-width: 640px) 520px, 100vw',
+  },
+  'Group 117.png': {
+    width: 430,
+    height: 10767,
+    widths: [200, 400],
+    sizes: '(min-width: 640px) 430px, 100vw',
+  },
+};
+
 function ProjectImage({ screen, eager = false }: { screen: ScreenSpec; eager?: boolean }) {
-  return <img src={imagePath(screen.file)} alt={screen.alt} loading={eager ? 'eager' : 'lazy'} decoding="async" />;
+  const src = imagePath(screen.file);
+  const spec = responsiveScreenSpecs[screen.file];
+  const srcSet = spec
+    ? getResponsiveImageSrcSet(src, spec.widths, spec.width)
+    : undefined;
+
+  return (
+    <img
+      src={src}
+      srcSet={srcSet}
+      sizes={srcSet ? spec?.sizes : undefined}
+      width={spec?.width}
+      height={spec?.height}
+      alt={screen.alt}
+      loading={eager ? 'eager' : 'lazy'}
+      fetchPriority={eager ? 'high' : 'auto'}
+      decoding="async"
+    />
+  );
 }
 
 export function AwsCloudClubWebsiteContributionsPage() {

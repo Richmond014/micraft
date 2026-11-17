@@ -1,11 +1,14 @@
 import { useEffect, useState, type MouseEvent } from 'react';
 import { ArrowLeft, ArrowUpRight } from 'lucide-react';
 import { useSlidingPill } from '../../hooks/useSlidingPill';
+import { getResponsiveImageSrcSet } from '../../lib/assets';
 import { scrollToSection } from '../../lib/scroll';
+import { DeferredImage } from '../ui/DeferredImage';
 import './BantayContributionsPage.css';
 
 const assetRoot = '/assets/figma/BANTAY%20ASSETS/';
 const liveSiteUrl = 'https://bantay-pmt.org/';
+const heroImageSizes = '(min-width: 1200px) 705px, (min-width: 768px) 60vw, calc(100vw - 32px)';
 
 const chapters = [
   { id: 'bantay-overview', label: 'Overview' },
@@ -37,7 +40,17 @@ function FlowArrow() {
 }
 
 function ProjectImage({ src, alt, eager = false }: { src: string; alt: string; eager?: boolean }) {
-  return <img src={`${assetRoot}${encodeURIComponent(src)}`} alt={alt} loading={eager ? 'eager' : 'lazy'} decoding="async" />;
+  const imageSrc = `${assetRoot}${encodeURIComponent(src)}`;
+  const srcSet = getResponsiveImageSrcSet(imageSrc, [400, 800, 1200], src === 'image 46.png' ? 1765 : undefined);
+  return (
+    <DeferredImage
+      src={imageSrc}
+      srcSet={srcSet}
+      sizes={srcSet ? heroImageSizes : undefined}
+      alt={alt}
+      priority={eager}
+    />
+  );
 }
 
 export function BantayContributionsPage() {

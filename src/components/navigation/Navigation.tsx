@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 're
 import { AnimatePresence, motion } from 'motion/react'
 import { useReducedMotion } from '../../hooks/useMediaQuery'
 import { useSound } from '../../hooks/useSound'
-import { assets } from '../../lib/assets'
+import { assets, getResponsiveImageSrcSet } from '../../lib/assets'
 import { scrollToTarget } from '../../lib/scroll'
 
 const navItems = [
@@ -434,6 +434,8 @@ export function Navigation() {
                 {assets.nav.monogram && (
                   <img
                     src={assets.nav.monogram}
+                    srcSet={getResponsiveImageSrcSet(assets.nav.monogram, [400])}
+                    sizes={`${LOGO_WIDTH}px`}
                     alt="MR"
                     draggable={false}
                     className="pointer-events-none absolute left-1/2 top-1/2 h-auto max-w-none select-none"

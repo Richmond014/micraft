@@ -36,7 +36,7 @@ function getProjectCurtainPalette(button: HTMLButtonElement): CurtainPalette | u
 
 export function ProjectNotebookDialog({ project, onClose, returnFocusRef }: Props) {
   const closeButtonRef = useRef<HTMLButtonElement>(null)
-  const navigateToHash = usePageNavigation()
+  const { navigate, prefetch } = usePageNavigation()
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow
@@ -76,12 +76,17 @@ export function ProjectNotebookDialog({ project, onClose, returnFocusRef }: Prop
           src={`${archiveAsset}${project.spread}`}
           alt=""
           aria-hidden="true"
+          loading="lazy"
+          decoding="async"
           className="absolute inset-0 hidden size-full object-fill md:block [clip-path:inset(1.5%_1.5%_1.5%_1.5%_round_24px)]"
         />
         <div className="relative aspect-[519/757] overflow-hidden rounded-[24px] shadow-[0_8px_24px_rgba(0,0,0,0.12)] md:absolute md:left-[3.06%] md:top-[4.33%] md:aspect-auto md:h-[91.1%] md:w-[45.4%] md:rounded-[30px] md:shadow-none">
           <img
             src={`${archiveAsset}${project.artwork}`}
             alt={`${project.title} project artwork`}
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
             className="absolute inset-0 size-full object-cover"
           />
         </div>
@@ -113,12 +118,15 @@ export function ProjectNotebookDialog({ project, onClose, returnFocusRef }: Prop
               <div className="mt-2 flex w-fit flex-wrap items-center justify-start gap-2 self-start">
                 <button
                   type="button"
+                  onPointerEnter={() => prefetch(project.destination.hash)}
+                  onFocus={() => prefetch(project.destination.hash)}
                   onClick={(event) => {
+                    prefetch(project.destination.hash)
                     sessionStorage.setItem(project.destination.returnKey, JSON.stringify({
                       hash: window.location.hash || '#home',
                       scrollY: window.scrollY,
                     }))
-                    navigateToHash(project.destination.hash, getProjectCurtainPalette(event.currentTarget))
+                    navigate(project.destination.hash, getProjectCurtainPalette(event.currentTarget))
                   }}
                   className="project-notebook-action project-notebook-action--primary inline-flex min-h-8 w-fit items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium md:text-[clamp(9px,1.05vw,12px)]"
                 >
