@@ -1,0 +1,182 @@
+.project-notebook-dialog[data-project-theme='loop'] {
+  --project-primary: #711982;
+  --project-primary-soft: #f8f0fa;
+  --project-primary-border: #dfc6e7;
+  --project-primary-hover: #f0e2f4;
+  --project-secondary: #168a4b;
+  --project-secondary-soft: #f0faf3;
+  --project-secondary-border: #c0e3cc;
+  --project-secondary-hover: #e5f6e9;
+  --project-action-fill: #3f1d56;
+  --project-action-hover-fill: #8a3fbc;
+  --project-action-label: #00e676;
+}
+
+.project-notebook-dialog[data-project-theme='aws-skill-builder'] {
+  --project-primary: #7029b8;
+  --project-primary-soft: #f7f1fc;
+  --project-primary-border: #dcc8ef;
+  --project-primary-hover: #eee2f8;
+  --project-secondary: #a85b08;
+  --project-secondary-soft: #fff8ef;
+  --project-secondary-border: #f0d7b8;
+  --project-secondary-hover: #fff0dc;
+  --project-action-fill: #350858;
+  --project-action-hover-fill: #5b1ca1;
+  --project-action-label: #ffb38c;
+}
+
+.project-notebook-dialog[data-project-theme='aws-club'] {
+  --project-primary: #5c0bbd;
+  --project-primary-soft: #f8f5ff;
+  --project-primary-border: #d8c5ff;
+  --project-primary-hover: #eee7fb;
+  --project-secondary: #625274;
+  --project-secondary-soft: #f8f5ff;
+  --project-secondary-border: #d8c5ff;
+  --project-secondary-hover: #eee7fb;
+  --project-action-fill: #360078;
+  --project-action-hover-fill: #5c0bbd;
+  --project-action-label: #d8c5ff;
+}
+
+.project-notebook-dialog[data-project-theme='aws-official'] {
+  --project-primary: #54119c;
+  --project-primary-soft: #fbf7ff;
+  --project-primary-border: #d7b5ff;
+  --project-primary-hover: #f1e8fb;
+  --project-secondary: #a51d79;
+  --project-secondary-soft: #fff6fc;
+  --project-secondary-border: #ecc3df;
+  --project-secondary-hover: #f9e9f4;
+  --project-action-fill: #21063b;
+  --project-action-hover-fill: #54119c;
+  --project-action-label: #ffb38c;
+}
+
+.project-notebook-dialog[data-project-theme='bantay'] {
+  --project-primary: #137db5;
+  --project-primary-soft: #f0f8fc;
+  --project-primary-border: #c0dfef;
+  --project-primary-hover: #e3f2f9;
+  --project-secondary: #073665;
+  --project-secondary-soft: #f1f5fa;
+  --project-secondary-border: #c5d3e2;
+  --project-secondary-hover: #e5edf5;
+  --project-action-fill: #073665;
+  --project-action-hover-fill: #137db5;
+  --project-action-label: #b5e7ff;
+}
+
+.project-notebook-dialog[data-project-theme='ease-service'] {
+  --project-primary: #1558b8;
+  --project-primary-soft: #f4f8ff;
+  --project-primary-border: #b8ddff;
+  --project-primary-hover: #e8f2ff;
+  --project-secondary: #0a3e91;
+  --project-secondary-soft: #f1f6ff;
+  --project-secondary-border: #c3d6f1;
+  --project-secondary-hover: #e3edfc;
+  --project-action-fill: #0a3e91;
+  --project-action-hover-fill: #1558b8;
+  --project-action-label: #b8ddff;
+}
+
+.project-notebook-dialog[data-project-theme='spotify'] {
+  --project-primary: #137a38;
+  --project-primary-soft: #f1faf4;
+  --project-primary-border: #bde3ca;
+  --project-primary-hover: #e5f6e9;
+  --project-secondary: #535353;
+  --project-secondary-soft: #f6f6f6;
+  --project-secondary-border: #d4d4d4;
+  --project-secondary-hover: #ececec;
+  --project-action-fill: #121212;
+  --project-action-hover-fill: #282828;
+  --project-action-label: #1ed760;
+}
+
+.project-notebook-dialog[data-project-theme='hanapbuhay'] {
+  --project-primary: #a33e0a;
+  --project-primary-soft: #fff8ef;
+  --project-primary-border: #f3d09d;
+  --project-primary-hover: #fff0d4;
+  --project-secondary: #8e3208;
+  --project-secondary-soft: #fff5e8;
+  --project-secondary-border: #edc69c;
+  --project-secondary-hover: #ffe9c9;
+  --project-action-fill: #8e3208;
+  --project-action-hover-fill: #bd4b0a;
+  --project-action-label: #ffd08b;
+}
+
+.project-notebook-action {
+  border: 1px solid var(--action-border);
+  background: linear-gradient(180deg, #fff 0%, var(--action-soft) 100%);
+  color: var(--action-color);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 95%), 0 1px 3px rgb(0 0 0 / 8%);
+  transition:
+    background 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
+}
+
+.project-notebook-action--primary {
+  --action-color: var(--project-primary);
+  --action-soft: var(--project-primary-soft);
+  --action-border: var(--project-primary-border);
+  --action-hover: var(--project-primary-hover);
+  border-color: var(--project-action-fill);
+  background: linear-gradient(180deg, var(--project-action-hover-fill) 0%, var(--project-action-fill) 100%);
+  color: var(--project-action-label);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 24%), 0 2px 5px rgb(0 0 0 / 16%);
+}
+
+.project-notebook-action--secondary {
+  --action-color: var(--project-secondary);
+  --action-soft: var(--project-secondary-soft);
+  --action-border: var(--project-secondary-border);
+  --action-hover: var(--project-secondary-hover);
+}
+
+.project-notebook-action:hover {
+  transform: translateY(-1px);
+  background: linear-gradient(180deg, #fff 0%, var(--action-hover) 100%);
+  box-shadow: inset 0 1px 0 #fff, 0 4px 10px rgb(0 0 0 / 12%);
+}
+
+.project-notebook-action--primary:hover {
+  border-color: var(--project-action-fill);
+  background: var(--project-action-hover-fill);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 24%), 0 4px 10px rgb(0 0 0 / 20%);
+}
+
+.project-notebook-action:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: inset 0 1px 3px rgb(0 0 0 / 12%);
+}
+
+.project-notebook-action:focus-visible,
+.project-notebook-close:focus-visible {
+  outline: 2px solid var(--project-primary);
+  outline-offset: 2px;
+}
+
+.project-notebook-close {
+  border: 1px solid var(--project-primary-border);
+  background: linear-gradient(180deg, #fff 0%, var(--project-primary-soft) 100%);
+  color: var(--project-primary);
+}
+
+.project-notebook-close:hover {
+  transform: translateY(-1px);
+  border-color: var(--project-primary);
+  background: linear-gradient(180deg, #fff 0%, var(--project-primary-hover) 100%);
+  box-shadow: inset 0 1px 0 #fff, 0 3px 8px rgb(0 0 0 / 12%);
+}
+
+.project-notebook-close:active {
+  transform: translateY(0) scale(0.96);
+  box-shadow: inset 0 1px 3px rgb(0 0 0 / 12%);
+}

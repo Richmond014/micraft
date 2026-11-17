@@ -1,0 +1,19 @@
+@font-face {
+  font-family: "Helvetica Neue";
+  src: local("HelveticaNeue Light"), local("Helvetica Neue Light");
+  font-style: normal;
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: "Helvetica Neue";
+  src: local("Helvetica Neue Bold"), local("HelveticaNeue-Bold");
+  font-style: normal;
+  font-weight: 700;
+}
+
+@theme {
+  --font-sans: "Helvetica Neue", system-ui, Helvetica, Arial, sans-serif;
+  --font-italic-serif: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-display: "Cormorant Garamond", Didot, "Bodoni 72", "Times New Roman", serif;
+}
