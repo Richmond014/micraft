@@ -1,4 +1,5 @@
 import { motion } from 'motion/react'
+import { DeferredImage } from '../ui/DeferredImage'
 import { contactChannels } from '../../lib/data'
 import { assets } from '../../lib/assets'
 import { useReducedMotion } from '../../hooks/useMediaQuery'
@@ -67,7 +68,7 @@ export function ContactSection() {
                 {channel.label}
               </span>
               <span className="absolute top-[4.5%] left-[14.7%] grid h-[78%] w-[70.6%] place-items-center overflow-hidden rounded-[6px] border border-white/25 bg-[linear-gradient(145deg,#334cf2_0%,#1b33c7_55%,#10249b_100%)] shadow-[inset_0_2px_5px_rgba(255,255,255,0.28),inset_0_-4px_6px_rgba(0,0,0,0.32)]">
-                <img src={assets.contact[channel.id]} alt="" width={50} height={50} />
+                <DeferredImage src={assets.contact[channel.id]} alt="" width={50} height={50} />
               </span>
             </motion.a>
           </motion.li>

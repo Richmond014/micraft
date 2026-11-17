@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'motion/react'
+import { DeferredImage } from '../ui/DeferredImage'
 import { useReducedMotion } from '../../hooks/useMediaQuery'
 import { assets } from '../../lib/assets'
 import { journey } from '../../lib/data'
@@ -157,7 +158,7 @@ export function RoleCards({ activeId: controlledActiveId, onActiveChange }: Role
                 transition={move}
                 className="pointer-events-none absolute grid place-items-center"
               >
-                <img src={card.image} alt="" className="absolute inset-0 size-full object-cover" />
+                <DeferredImage src={card.image} alt="" className="absolute inset-0 size-full object-cover" />
               </motion.span>
             )}
           </motion.button>

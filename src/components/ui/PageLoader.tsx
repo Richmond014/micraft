@@ -25,7 +25,6 @@ type PageLoaderProps = {
   cols?: number
   rows?: number
   fillOrder?: FillOrder
-  minDuration?: number
   maxDuration?: number
   background?: string
   foreground?: string
@@ -230,7 +229,6 @@ export function PageLoader({
   cols = 6,
   rows = 7,
   fillOrder = 'random',
-  minDuration = 2200,
   maxDuration = 9000,
   background = '#ffffff',
   foreground = '#000000',
@@ -254,9 +252,6 @@ export function PageLoader({
   const [fontsReady, setFontsReady] = useState(
     () =>
       typeof document === 'undefined' || !document.fonts || document.fonts.status === 'loaded',
-  )
-  const [pageReady, setPageReady] = useState(
-    () => typeof document === 'undefined' || document.readyState === 'complete',
   )
 
   const numRef = useRef<HTMLSpanElement>(null)
@@ -282,9 +277,8 @@ export function PageLoader({
 
   useEffect(() => {
     const assets = allUrls.length ? progress * allUrls.length : 0
-    realRef.current =
-      (assets + (fontsReady ? 1 : 0) + (pageReady ? 1 : 0)) / (allUrls.length + 2)
-  }, [progress, allUrls.length, fontsReady, pageReady])
+    realRef.current = (assets + (fontsReady ? 1 : 0)) / (allUrls.length + 1)
+  }, [progress, allUrls.length, fontsReady])
 
   useEffect(() => {
     onCompleteRef.current = onComplete
@@ -300,18 +294,6 @@ export function PageLoader({
       alive = false
     }
   }, [fontsReady])
-
-  useEffect(() => {
-    if (pageReady) return
-    const onLoad = () => setPageReady(true)
-    window.addEventListener('load', onLoad, { once: true })
-    let readyTimer: number | undefined
-    if (document.readyState === 'complete') readyTimer = window.setTimeout(onLoad, 0)
-    return () => {
-      window.removeEventListener('load', onLoad)
-      if (readyTimer !== undefined) window.clearTimeout(readyTimer)
-    }
-  }, [pageReady])
 
   useEffect(() => {
     const onResize = () => setGridW(measureGridWidth())
@@ -375,9 +357,8 @@ export function PageLoader({
       last = now
       const elapsed = now - start
       const timedOut = elapsed >= maxDuration
-      const timeCap = Math.min(elapsed / minDuration, 1)
       const real = Math.max(realRef.current, 0.03)
-      const target = timedOut ? 1 : Math.min(real, timeCap)
+      const target = timedOut ? 1 : real
 
       shown = timedOut
         ? 1
@@ -401,7 +382,7 @@ export function PageLoader({
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [counting, minDuration, maxDuration, total, reduceMotion])
+  }, [counting, maxDuration, total, reduceMotion])
 
   // Exit timeline: popping -> message -> opening -> done.
   // Each step owns one timer, and a step's timer is only cleared when the phase has moved on.

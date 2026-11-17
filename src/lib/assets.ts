@@ -73,11 +73,10 @@ export const assets = {
     github: `${figma}imgGroup4.svg`,
     cursor: `${figma}imgGroup5.svg`,
   },
+  // Only preload the hero toolbar icons; below-the-fold media loads near the viewport.
   preload: [
     `${figma}imgImage13.png`,
     `${figma}imgImage14.png`,
     `${figma}imgImage15.png`,
-    `${figma}img111.png`,
-    `${figma}imgImage16.png`,
   ],
 }

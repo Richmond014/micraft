@@ -1,20 +1,20 @@
-import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ComponentType } from 'react'
+import {
+  lazy,
+  Suspense,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type ComponentType,
+  type LazyExoticComponent,
+} from 'react'
 import { AboutSection } from './components/about/AboutSection'
 import { ContactSection } from './components/contact/ContactSection'
 import { ExperienceSection } from './components/experience/ExperienceSection'
 import { Hero } from './components/hero/Hero'
 import { Navigation } from './components/navigation/Navigation'
 import { ProjectsSection } from './components/projects/ProjectsSection'
-import { AwsCloudClubWebsiteContributionsPage } from './components/projects/AwsCloudClubWebsiteContributionsPage'
-import { AwsOfficialSiteContributionsPage } from './components/projects/AwsOfficialSiteContributionsPage'
-import { AwsSkillBuilderCaseStudyPage } from './components/projects/AwsSkillBuilderCaseStudyPage'
-import { BantayContributionsPage } from './components/projects/BantayContributionsPage'
-import { EaseServiceContributionsPage } from './components/projects/EaseServiceContributionsPage'
-import { HanapBuhayContributionsPage } from './components/projects/HanapBuhayContributionsPage'
-import { LoopCaseStudyPage } from './components/projects/LoopCaseStudyPage'
-import { SpotifyContributionsPage } from './components/projects/SpotifyContributionsPage'
-import { WorksArchivePage } from './components/projects/WorksArchivePage'
-import { ResumePage } from './components/resume/ResumePage'
 import { MakingProcess } from './components/timeline/MakingProcess'
 import { Footer } from './components/contact/Footer'
 import { PageLoader } from './components/ui/PageLoader'
@@ -27,17 +27,57 @@ import { PageNavigationContext, type CurtainPalette } from './lib/PageNavigation
 import { useLenis } from './hooks/useLenis'
 import { useReducedMotion } from './hooks/useMediaQuery'
 
-const pages: Record<string, ComponentType> = {
-  '#loop-case-study': LoopCaseStudyPage,
-  '#aws-skill-builder-case-study': AwsSkillBuilderCaseStudyPage,
-  '#bantay-contributions': BantayContributionsPage,
-  '#ease-contributions': EaseServiceContributionsPage,
-  '#spotify-contributions': SpotifyContributionsPage,
-  '#hanap-contributions': HanapBuhayContributionsPage,
-  '#awscc-contributions': AwsCloudClubWebsiteContributionsPage,
-  '#awsoff-contributions': AwsOfficialSiteContributionsPage,
-  '#works': WorksArchivePage,
-  '#resume': ResumePage,
+const pages: Partial<Record<string, LazyExoticComponent<ComponentType>>> = {
+  '#loop-case-study': lazy(() =>
+    import('./components/projects/LoopCaseStudyPage.tsx').then((module) => ({
+      default: module.LoopCaseStudyPage,
+    })),
+  ),
+  '#aws-skill-builder-case-study': lazy(() =>
+    import('./components/projects/AwsSkillBuilderCaseStudyPage.tsx').then((module) => ({
+      default: module.AwsSkillBuilderCaseStudyPage,
+    })),
+  ),
+  '#bantay-contributions': lazy(() =>
+    import('./components/projects/BantayContributionsPage.tsx').then((module) => ({
+      default: module.BantayContributionsPage,
+    })),
+  ),
+  '#ease-contributions': lazy(() =>
+    import('./components/projects/EaseServiceContributionsPage.tsx').then((module) => ({
+      default: module.EaseServiceContributionsPage,
+    })),
+  ),
+  '#spotify-contributions': lazy(() =>
+    import('./components/projects/SpotifyContributionsPage.tsx').then((module) => ({
+      default: module.SpotifyContributionsPage,
+    })),
+  ),
+  '#hanap-contributions': lazy(() =>
+    import('./components/projects/HanapBuhayContributionsPage.tsx').then((module) => ({
+      default: module.HanapBuhayContributionsPage,
+    })),
+  ),
+  '#awscc-contributions': lazy(() =>
+    import('./components/projects/AwsCloudClubWebsiteContributionsPage.tsx').then((module) => ({
+      default: module.AwsCloudClubWebsiteContributionsPage,
+    })),
+  ),
+  '#awsoff-contributions': lazy(() =>
+    import('./components/projects/AwsOfficialSiteContributionsPage.tsx').then((module) => ({
+      default: module.AwsOfficialSiteContributionsPage,
+    })),
+  ),
+  '#works': lazy(() =>
+    import('./components/projects/WorksArchivePage.tsx').then((module) => ({
+      default: module.WorksArchivePage,
+    })),
+  ),
+  '#resume': lazy(() =>
+    import('./components/resume/ResumePage.tsx').then((module) => ({
+      default: module.ResumePage,
+    })),
+  ),
 }
 
 type PendingNavigation = {
@@ -254,7 +294,9 @@ function App() {
   }, [Page, hash])
 
   const content = Page ? (
-    <Page />
+    <Suspense fallback={<div className="min-h-svh bg-white" aria-busy="true" />}>
+      <Page />
+    </Suspense>
   ) : (
       <div className="min-h-svh bg-white font-sans font-light text-black">
         <Navigation />

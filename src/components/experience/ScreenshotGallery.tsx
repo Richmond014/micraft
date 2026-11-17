@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useReducedMotion } from '../../hooks/useMediaQuery'
+import { DeferredImage } from '../ui/DeferredImage'
 
 type Props = { screenshots: string[] }
 
@@ -53,16 +54,16 @@ export function ScreenshotGallery({ screenshots }: Props) {
 
   const renderImages = (duplicate: boolean) =>
     screenshots.map((src, index) => (
-      <img
+      <DeferredImage
         key={`${duplicate ? 'dup' : 'main'}-${src}-${index}`}
         src={src}
         alt={duplicate ? '' : `Experience photo ${index + 1}`}
         aria-hidden={duplicate || undefined}
-        decoding="async"
         draggable={false}
         onLoad={duplicate ? undefined : markSettled}
         onError={duplicate ? undefined : markSettled}
         className="h-full w-auto max-w-none shrink-0 rounded-[9px] object-contain"
+        rootMargin="600px"
       />
     ))
 

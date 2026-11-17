@@ -1,4 +1,5 @@
 import { motion } from 'motion/react'
+import { DeferredImage } from '../ui/DeferredImage'
 
 type Props = {
   previews: string[]
@@ -58,7 +59,7 @@ export function FolderGraphic({ previews, active, reduced, title, date }: Props)
             }}
             className="overflow-hidden rounded-[5px] bg-white shadow-[0_6px_16px_rgba(0,0,0,0.24)]"
           >
-            <img src={src} alt="" loading="lazy" decoding="async" draggable={false} className="size-full object-cover" />
+            <DeferredImage src={src} alt="" draggable={false} className="size-full object-cover" />
           </motion.div>
         )
       })}

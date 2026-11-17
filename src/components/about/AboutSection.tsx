@@ -1,4 +1,5 @@
 import { Plus } from 'lucide-react'
+import { DeferredImage } from '../ui/DeferredImage'
 import { IdCard } from './IdCard'
 import { PillButton } from '../ui/PillButton'
 import { assets } from '../../lib/assets'
@@ -27,7 +28,7 @@ export function AboutSection() {
               <ul className="mt-3 flex gap-3">
                 {icons.map(({ id, label, src }) => (
                   <li key={id}>
-                    <img src={src} alt={label} className="size-10 rounded-xl object-contain sm:size-12" />
+                    <DeferredImage src={src} alt={label} className="size-10 rounded-xl object-contain sm:size-12" />
                   </li>
                 ))}
               </ul>
