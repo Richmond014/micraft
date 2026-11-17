@@ -47,7 +47,6 @@ export function NetworkStatus() {
 
     const markFailed = (media: TrackedMedia) => {
       retryingMedia.delete(media)
-      delete media.dataset.mediaShimmer
       if (navigator.onLine) {
         media.dataset.mediaState = 'error'
         interruptedMedia.delete(media)
@@ -61,7 +60,6 @@ export function NetworkStatus() {
 
     const markLoaded = (media: TrackedMedia) => {
       media.dataset.mediaState = 'loaded'
-      delete media.dataset.mediaShimmer
       failedMedia.delete(media)
       interruptedMedia.delete(media)
       retryingMedia.delete(media)
@@ -113,11 +111,6 @@ export function NetworkStatus() {
     }
 
     const markLoading = (media: TrackedMedia) => {
-      if (getComputedStyle(media).animationName === 'none') {
-        media.dataset.mediaShimmer = 'true'
-      } else {
-        delete media.dataset.mediaShimmer
-      }
       media.dataset.mediaState = 'loading'
     }
 
@@ -238,12 +231,10 @@ export function NetworkStatus() {
       syncCounts()
       document.querySelectorAll<TrackedMedia>('img[data-media-state="loading"], video[data-media-state="loading"]').forEach((media) => {
         media.dataset.mediaState = 'offline'
-        delete media.dataset.mediaShimmer
         interruptedMedia.add(media)
       })
       failedMedia.forEach((media) => {
         media.dataset.mediaState = 'offline'
-        delete media.dataset.mediaShimmer
       })
     }
 
