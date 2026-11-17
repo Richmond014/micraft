@@ -45,16 +45,19 @@ const GLITCH = '01{}<>/\\*+'
 
 // Timeline after the counter reaches 100%
 const SWIRL_AT = 0.9 // the swirl starts when loading is this far along, so nobody waits at 100%
-const SUCK_MS = 800 // clover is pushed from the stem into the center
+const SUCK_MS = 1500 // clover is pushed from the stem into the center
 const POP_MS = SUCK_MS + 100 // ...and snaps; the logo is already opening by now
 const FINAL_HOLD = 200
+const COUNT_EASE_MS = 300
+const SNAP_RING_MS = 620
 const LOGO_IN_MS = 600 // the logo eases in over this long
 const LOGO_IN_DELAY = 400 // measured from the swirl start, so it opens as the tiles collapse
 const LOGO_EASE = 'cubic-bezier(0.37, 0, 0.2, 1)' // gentle in, soft landing
 const OPEN_MS = 800 // curtain lifts, logo shrinks away, page un-blurs
 const EXIT_STAGGER = 100 // the logo starts leaving first, the curtain follows
-const SWEEP_MS = 340 // how long the push takes to travel from the stem across the clover
+const SWEEP_MS = 600 // how long the push takes to travel from the stem across the clover
 const TRAVEL_MS = SUCK_MS - SWEEP_MS - 60 // how long each tile spends spiraling in
+const SNAP_RING_DELAY = Math.max(0, SUCK_MS - SNAP_RING_MS - 60)
 const WIND_UP_DEG = -5 // each tile pulls back a touch before it is pushed
 
 function mulberry32(seed: number) {
@@ -361,7 +364,7 @@ export function PageLoader({
 
       shown = timedOut
         ? 1
-        : shown + (target - shown) * (1 - Math.exp(-dt / (reduceMotion ? 1 : 170)))
+        : shown + (target - shown) * (1 - Math.exp(-dt / (reduceMotion ? 1 : COUNT_EASE_MS)))
       if (target >= 1 && 1 - shown < 0.002) shown = 1
 
       const percentage = shown >= 1 ? 100 : Math.floor(shown * 100)
@@ -461,15 +464,7 @@ export function PageLoader({
           0%   { opacity: 0.9; transform: translate(-50%, -50%) scale(0.15); }
           100% { opacity: 0;   transform: translate(-50%, -50%) scale(7); }
         }
-        /* The "stone": grows as the tiles arrive, then collapses with the snap. */
-        @keyframes pl-snap-dot {
-          0%   { opacity: 0; transform: translate(-50%, -50%) scale(0); }
-          20%  { opacity: 1; }
-          72%  { opacity: 1; transform: translate(-50%, -50%) scale(1.15); }
-          100% { opacity: 0; transform: translate(-50%, -50%) scale(0); }
-        }
-        /* Logo arrival: opens outward from the point where the stone snapped (like the ring),
-           while it sharpens out of a soft blur and grows gently into place. */
+        /* Logo arrival: opens from the center while it sharpens and grows gently into place. */
         @keyframes pl-logo-in {
           0%   { opacity: 0; clip-path: circle(0% at 50% 50%);  filter: blur(10px); transform: scale(0.88); }
           35%  { opacity: 1; }
@@ -598,38 +593,21 @@ export function PageLoader({
                   })}
                 </div>
 
-                {/* The snap: a dot collapses and a thin ring flicks outward */}
                 {popping && !reduceMotion && (
-                  <>
-                    <div
-                      aria-hidden="true"
-                      style={{
-                        position: 'absolute',
-                        left: '50%',
-                        top: '50%',
-                        width: 18,
-                        height: 18,
-                        borderRadius: '50%',
-                        background: foreground,
-                        pointerEvents: 'none',
-                        animation: `pl-snap-dot ${SUCK_MS - 140}ms linear ${Math.round(SWEEP_MS * 0.9)}ms both`,
-                      }}
-                    />
-                    <div
-                      aria-hidden="true"
-                      style={{
-                        position: 'absolute',
-                        left: '50%',
-                        top: '50%',
-                        width: 60,
-                        height: 60,
-                        borderRadius: '50%',
-                        border: `1.5px solid ${foreground}`,
-                        pointerEvents: 'none',
-                        animation: `pl-snap-ring 620ms ${EASE} ${SUCK_MS - 100}ms both`,
-                      }}
-                    />
-                  </>
+                  <div
+                    aria-hidden="true"
+                    style={{
+                      position: 'absolute',
+                      left: '50%',
+                      top: '50%',
+                      width: 60,
+                      height: 60,
+                      borderRadius: '50%',
+                      border: `1.5px solid ${foreground}`,
+                      pointerEvents: 'none',
+                      animation: `pl-snap-ring ${SNAP_RING_MS}ms ${EASE} ${SNAP_RING_DELAY}ms both`,
+                    }}
+                  />
                 )}
               </div>
             </div>
