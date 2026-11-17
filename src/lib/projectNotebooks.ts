@@ -29,7 +29,7 @@ export const awsSkillBuilderNotebook: ProjectNotebook = {
   destination: {
     hash: '#aws-skill-builder-case-study',
     returnKey: 'aws-skill-builder-return',
-    actionLabel: 'View Case Study',
+    actionLabel: 'View Contribution',
     liveUrl: 'https://sbd.awsccpup.cloud/',
   },
 }

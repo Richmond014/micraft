@@ -223,7 +223,7 @@ export function AwsSkillBuilderCaseStudyPage() {
     <main className="aws-project-page">
       <ChapterNav />
       {typeof document !== 'undefined' && createPortal(
-        <div className={`fixed ${backButtonAtTop ? 'left-[clamp(64px,6.4vw,120px)]' : 'left-6'} top-4 z-[60] transition-[left,opacity,transform] duration-200 ease-out ${showBackButton ? 'translate-y-0 opacity-100' : 'pointer-events-none -translate-y-2 opacity-0'}`}>
+        <div className={`aws-back-button fixed top-4 z-[60] transition-[left,opacity,transform] duration-200 ease-out ${backButtonAtTop ? '' : 'aws-back-button--scrolled'} ${showBackButton ? 'translate-y-0 opacity-100' : 'pointer-events-none -translate-y-2 opacity-0'}`}>
           <button
             type="button"
             onClick={goBack}

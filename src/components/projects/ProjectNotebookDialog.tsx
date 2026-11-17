@@ -102,22 +102,24 @@ export function ProjectNotebookDialog({ project, onClose, returnFocusRef }: Prop
                 src={`${archiveAsset}${project.logo}`}
                 alt=""
                 aria-hidden="true"
+                width={70}
+                height={85}
                 className="h-12 w-12 shrink-0 object-contain md:h-auto md:w-[13%]"
               />
               <div className="min-w-0">
-                <h2 id="project-detail-title" className="text-base font-semibold leading-tight tracking-tight text-neutral-950 md:text-[clamp(11px,1.35vw,17px)]">
+                <h2 id="project-detail-title" className="text-base font-semibold leading-tight tracking-tight text-neutral-950 md:text-[clamp(11px,2.36cqi,17px)]">
                   {project.title}
                 </h2>
-                <p className="mt-1 text-xs text-neutral-700 md:text-[clamp(9px,1.1vw,13px)]">
+                <p className="mt-1 text-xs text-neutral-700 md:text-[clamp(9px,1.81cqi,13px)]">
                   {project.detailDate}
                 </p>
               </div>
             </div>
-            <p className="mt-6 text-xs leading-[1.5] text-neutral-800 md:mb-[clamp(12px,1.6vw,20px)] md:mt-[3%] md:text-[clamp(9px,1.15vw,13px)] md:leading-[1.35]">
+            <p className="mt-6 text-xs leading-[1.5] text-neutral-800 md:mb-[clamp(12px,2.78cqi,20px)] md:mt-[3%] md:text-[clamp(9px,1.81cqi,13px)] md:leading-[1.35]">
               {project.description}
             </p>
             <div className="mt-7 md:mt-auto">
-              <p className="text-left text-xs text-neutral-900 md:text-[clamp(9px,1.15vw,13px)]">
+              <p className="text-left text-xs text-neutral-900 md:text-[clamp(9px,1.81cqi,13px)]">
                 <strong>Role:</strong> {project.role}
               </p>
               <div className="mt-2 flex w-fit flex-wrap items-center justify-start gap-2 self-start">
@@ -133,7 +135,7 @@ export function ProjectNotebookDialog({ project, onClose, returnFocusRef }: Prop
                     }))
                     navigate(project.destination.hash, getProjectCurtainPalette(event.currentTarget))
                   }}
-                  className="project-notebook-action project-notebook-action--primary inline-flex min-h-8 w-fit items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium md:text-[clamp(9px,1.05vw,12px)]"
+                  className="project-notebook-action project-notebook-action--primary inline-flex min-h-8 w-fit items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium md:text-[clamp(9px,1.67cqi,12px)]"
                 >
                   {project.destination.actionLabel}
                   <ArrowUpRight aria-hidden="true" size={12} />
@@ -143,7 +145,7 @@ export function ProjectNotebookDialog({ project, onClose, returnFocusRef }: Prop
                     href={project.destination.liveUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="project-notebook-action project-notebook-action--secondary inline-flex min-h-8 w-fit items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium md:text-[clamp(9px,1.05vw,12px)]"
+                    className="project-notebook-action project-notebook-action--secondary inline-flex min-h-8 w-fit items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium md:text-[clamp(9px,1.67cqi,12px)]"
                   >
                     Live Server
                     <ArrowUpRight aria-hidden="true" size={12} />

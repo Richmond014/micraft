@@ -1,3 +1,7 @@
+.project-notebook-dialog {
+  container-type: inline-size;
+}
+
 .project-notebook-dialog[data-project-theme='loop'] {
   --project-primary: #711982;
   --project-primary-soft: #f8f0fa;

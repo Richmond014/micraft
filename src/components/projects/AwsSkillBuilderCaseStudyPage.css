@@ -16,6 +16,10 @@
 }
 .aws-project-page ::selection { color: #fff; background: var(--aws-violet); }
 
+.aws-back-button { left: clamp(28px, 8vw, 128px); }
+.aws-back-button--scrolled { left: 24px; }
+@media (max-width: 760px) { .aws-back-button { left: 24px; } }
+
 .aws-return-link:focus-visible { outline: 3px solid #a984f5; outline-offset: 4px; }
 
 .aws-chapter-nav {
