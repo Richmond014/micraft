@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ImgHTMLAttributes } from 'react'
+import { useEffect, useRef, useState, type ImgHTMLAttributes, type SyntheticEvent } from 'react'
 
 type Props = Omit<ImgHTMLAttributes<HTMLImageElement>, 'src' | 'srcSet' | 'loading' | 'fetchPriority'> & {
   src: string
@@ -12,11 +12,15 @@ export function DeferredImage({
   srcSet,
   rootMargin = '200px',
   priority = false,
+  onError,
   ...props
 }: Props) {
   const imageRef = useRef<HTMLImageElement>(null)
   const [shouldLoad, setShouldLoad] = useState(() => priority || typeof IntersectionObserver === 'undefined')
+  const [fallbackSourceKey, setFallbackSourceKey] = useState<string | null>(null)
   const isReady = priority || shouldLoad
+  const sourceKey = `${src}\u0000${srcSet ?? ''}`
+  const usingOriginalSource = fallbackSourceKey === sourceKey
 
   useEffect(() => {
     if (priority || shouldLoad) return
@@ -32,6 +36,20 @@ export function DeferredImage({
     return () => observer.disconnect()
   }, [priority, rootMargin, shouldLoad])
 
+  const handleError = (event: SyntheticEvent<HTMLImageElement>) => {
+    if (isReady && srcSet && !usingOriginalSource) {
+      setFallbackSourceKey(sourceKey)
+      return
+    }
+
+    if (onError) {
+      onError(event)
+      return
+    }
+
+    console.error(`Unable to load image "${src}".`)
+  }
+
   return (
     <img
       {...props}
@@ -39,7 +57,8 @@ export function DeferredImage({
       loading={isReady ? 'eager' : 'lazy'}
       fetchPriority={priority ? 'high' : 'auto'}
       decoding={props.decoding ?? 'async'}
-      srcSet={isReady ? srcSet : undefined}
+      onError={handleError}
+      srcSet={isReady && !usingOriginalSource ? srcSet : undefined}
       src={isReady ? src : undefined}
     />
   )

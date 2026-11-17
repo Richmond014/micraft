@@ -97,9 +97,16 @@ const pages: Partial<Record<string, LazyExoticComponent<ComponentType>>> = Objec
 
 const bantayHeroSrc = '/assets/figma/BANTAY%20ASSETS/image%2046.png'
 const bantayHeroSizes = '(min-width: 1200px) 705px, (min-width: 768px) 60vw, calc(100vw - 32px)'
+const awsSkillBuilderHeroSrc = '/assets/figma/imgRectangle25.png'
+const awsSkillBuilderHeroSizes = '(min-width: 1385px) 540px, (min-width: 768px) 39vw, calc(100vw - 32px)'
 const loopHeroSrc = '/assets/figma/loop-case-study/iphone16-pro.png'
 const loopHeroSizes = '(min-width: 1920px) 1500px, 78.125vw'
 const routeHeroAssets: Record<string, { src: string; srcSet?: string; sizes?: string }> = {
+  '#aws-skill-builder-case-study': {
+    src: awsSkillBuilderHeroSrc,
+    srcSet: getResponsiveImageSrcSet(awsSkillBuilderHeroSrc),
+    sizes: awsSkillBuilderHeroSizes,
+  },
   '#loop-case-study': {
     src: loopHeroSrc,
     srcSet: getResponsiveImageSrcSet(loopHeroSrc, [400, 800, 1200, 1600, 2400, 3200], 4096),
@@ -128,6 +135,16 @@ function prefetchRouteHero(hash: string) {
   void image.decode().catch((error: unknown) => {
     if (routeHeroPreloads.get(hash) === image) routeHeroPreloads.delete(hash)
     console.error(`Unable to prefetch the primary image for route "${hash}".`, error)
+  })
+}
+
+function prefetchPageRoute(nextHash: string) {
+  const targetHash = nextHash.startsWith('#') ? nextHash : `#${nextHash}`
+  if (!pageLoaders[targetHash] || pageImports.has(targetHash)) return
+
+  prefetchRouteHero(targetHash)
+  void loadPage(targetHash).catch((error: unknown) => {
+    console.error(`Unable to prefetch route "${targetHash}".`, error)
   })
 }
 
@@ -194,6 +211,7 @@ function App() {
     const targetHash = nextHash.startsWith('#') ? nextHash : `#${nextHash}`
     if (curtainPhaseRef.current !== 'idle') return
 
+    prefetchPageRoute(targetHash)
     if (palette) paletteByHashRef.current.set(targetHash, palette)
     const navigation = {
       hash: targetHash,
@@ -212,13 +230,7 @@ function App() {
   }, [changeCurtainPhase, commitNavigation, reducedMotion])
 
   const prefetchPage = useCallback((nextHash: string) => {
-    const targetHash = nextHash.startsWith('#') ? nextHash : `#${nextHash}`
-    if (!pageLoaders[targetHash]) return
-
-    prefetchRouteHero(targetHash)
-    void loadPage(targetHash).catch((error: unknown) => {
-      console.error(`Unable to prefetch route "${targetHash}".`, error)
-    })
+    prefetchPageRoute(nextHash)
   }, [])
 
   const pageNavigation = useMemo(
@@ -232,6 +244,7 @@ function App() {
       const expectedHash = expectedHashChangeRef.current
       expectedHashChangeRef.current = null
       if (expectedHash === nextHash) return
+      prefetchPageRoute(nextHash)
 
       const navigation = {
         hash: nextHash,

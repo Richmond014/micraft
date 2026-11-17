@@ -1,6 +1,7 @@
 import { useEffect, useRef, type RefObject } from 'react'
 import { createPortal } from 'react-dom'
 import { ArrowUpRight, X } from 'lucide-react'
+import { useMediaQuery } from '../../hooks/useMediaQuery'
 import type { ProjectNotebook } from '../../lib/projectNotebooks'
 import { usePageNavigation, type CurtainPalette } from '../../lib/PageNavigationContext'
 import './ProjectNotebookDialog.css'
@@ -37,6 +38,7 @@ function getProjectCurtainPalette(button: HTMLButtonElement): CurtainPalette | u
 export function ProjectNotebookDialog({ project, onClose, returnFocusRef }: Props) {
   const closeButtonRef = useRef<HTMLButtonElement>(null)
   const { navigate, prefetch } = usePageNavigation()
+  const showSpread = useMediaQuery('(min-width: 768px)')
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow
@@ -76,8 +78,10 @@ export function ProjectNotebookDialog({ project, onClose, returnFocusRef }: Prop
           src={`${archiveAsset}${project.spread}`}
           alt=""
           aria-hidden="true"
-          loading="eager"
-          fetchPriority="high"
+          width={1143}
+          height={831}
+          loading={showSpread ? 'eager' : 'lazy'}
+          fetchPriority={showSpread ? 'high' : 'auto'}
           decoding="async"
           className="absolute inset-0 hidden size-full object-fill md:block [clip-path:inset(1.5%_1.5%_1.5%_1.5%_round_24px)]"
         />

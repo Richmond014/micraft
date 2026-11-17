@@ -5,6 +5,8 @@ import { useReducedMotion } from '../../hooks/useMediaQuery'
 import { assets, type ProjectId } from '../../lib/assets'
 import type { Project } from '../../lib/data'
 import { isFocusVisible } from '../../lib/dom'
+import { featuredProjectNotebooks } from '../../lib/projectNotebooks'
+import { usePageNavigation } from '../../lib/PageNavigationContext'
 import { springs } from '../../lib/springs'
 
 type Props = {
@@ -14,18 +16,31 @@ type Props = {
 
 export function ProjectFolder({ project, onOpenNotebook }: Props) {
   const reduced = useReducedMotion()
+  const { prefetch } = usePageNavigation()
   const [over, setOver] = useState(false)
   const [focused, setFocused] = useState(false)
   const active = over || focused
   const previews = assets.projects[project.id]?.previews ?? []
   const detailsId = `${project.id}-details`
+  const prefetchDestination = () => {
+    if (!project.href) prefetch(featuredProjectNotebooks[project.id].destination.hash)
+  }
 
   return (
     <article
       className="flex flex-col items-center"
-      onPointerEnter={(e) => { if (e.pointerType !== 'touch') setOver(true) }}
+      onPointerEnter={(e) => {
+        if (e.pointerType !== 'touch') {
+          setOver(true)
+          prefetchDestination()
+        }
+      }}
       onPointerLeave={(e) => { if (e.pointerType !== 'touch') setOver(false) }}
-      onFocus={(e) => setFocused(isFocusVisible(e.target))}
+      onFocus={(e) => {
+        const focusVisible = isFocusVisible(e.target)
+        setFocused(focusVisible)
+        if (focusVisible) prefetchDestination()
+      }}
       onBlur={() => setFocused(false)}
     >
       <button
