@@ -76,7 +76,8 @@ export function ProjectNotebookDialog({ project, onClose, returnFocusRef }: Prop
           src={`${archiveAsset}${project.spread}`}
           alt=""
           aria-hidden="true"
-          loading="lazy"
+          loading="eager"
+          fetchPriority="high"
           decoding="async"
           className="absolute inset-0 hidden size-full object-fill md:block [clip-path:inset(1.5%_1.5%_1.5%_1.5%_round_24px)]"
         />
